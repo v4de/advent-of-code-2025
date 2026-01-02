@@ -18,7 +18,7 @@
   },
   "license": "GPL-2.0-only",
   "author": "Bryan Zick",
-  "type": "commonjs",
+  "type": "module",
   "main": "app.ts",
   "scripts": {
     "test": "jest"
