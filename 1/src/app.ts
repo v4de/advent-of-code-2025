@@ -1,7 +1,7 @@
 import { createReadStream } from 'fs';
 import { createInterface } from 'readline';
 
-// Summary of the problem:
+// Summary of the problem 1:
 // dial is 0 - 99
 // dial starts at 50
 // if 11, R8 = 19
@@ -19,8 +19,8 @@ function processRotations(filePath: string) {
   const fileStream = createReadStream(filePath);
 
   const rl = createInterface({
-      input: fileStream,
-      crlfDelay: Infinity
+    input: fileStream,
+    crlfDelay: Infinity
   });
 
   rl.on('line', (line: string) => {
@@ -43,14 +43,65 @@ function processRotations(filePath: string) {
 
     console.log(`Final dial position: ${dial}`);
   });
-    console.log(`Times at 0: ${zeroCount}`);
-    return new Promise<void>((resolve) => {
-      rl.on('close', () => {
-        resolve();
-      });
+
+  return new Promise<void>((resolve) => {
+    rl.on('close', () => {
+      console.log(`Part One: Times at 0: ${zeroCount}`);
+      resolve();
     });
+  });
+}
+
+// summary of the problem 2:
+// same as problem 1 but count every time the dial hits 0 during the rotations
+
+function processRotationsAny0(filePath: string) {
+  let dial = 50;
+  let zeroCount = 0;
+
+  const fileStream = createReadStream(filePath);
+
+  const rl = createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  rl.on('line', (line: string) => {
+    const rotations = line.split(',').map(rot => rot.trim());
+
+    for (const rotation of rotations) {
+      const direction = rotation.charAt(0);
+      const amount = parseInt(rotation.slice(1), 10);
+
+      if (direction === 'R') {
+        for (let i = 0; i < amount; i++) {
+          dial = (dial - 1 + 100) % 100;
+          if (dial === 0) {
+            zeroCount++;
+          }
+        }
+      } else if (direction === 'L') {
+        for (let i = 0; i < amount; i++) {
+          dial = (dial + 1) % 100;
+          if (dial === 0) {
+            zeroCount++;
+          }
+        }
+      }
+
+      console.log(`Final dial position: ${dial}`);
+    };
+  });
+
+  return new Promise<void>((resolve) => {
+    rl.on('close', () => {
+      console.log(`Part Two: Times at 0: ${zeroCount}`);
+      resolve();
+    });
+  });
 }
 
 // Example usage
 const filePath = 'src/day1.txt';
 processRotations(filePath).catch(console.error);
+processRotationsAny0(filePath).catch(console.error);
