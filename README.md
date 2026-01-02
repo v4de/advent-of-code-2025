@@ -16,7 +16,7 @@ This repo is my attempt at solving the advent of code puzzle of 2025 to earn all
 
 Fork this repo and test using the following:
 
-Tested with Node v22.11.0
+Tested with Node v24.12.0
 
 ### Using ts-node via cli
 
